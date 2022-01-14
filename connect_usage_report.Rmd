@@ -1,0 +1,60 @@
+---
+title: "Access report `r Sys.Date()-1`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r startup, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(connectapi)
+library(dplyr)
+library(memoise)
+
+
+client <- connect(
+  server = Sys.getenv("CONNECT_SERVER"),
+  api_key = Sys.getenv("CONNECT_API_KEY")
+)
+
+# Get content details with error checking
+get_content_details <- function(content_guid){
+  content_data <- tryCatch(
+    connectapi::content_item(client, content_guid),
+    error = function(e){
+      list("content" = list("title" = "Content item not found", "url" = NULL))
+      }
+    )
+  list("title" = content_data$content$title,
+       "url" = content_data$content$url)
+}
+
+
+memo_get_content_details <- memoise::memoise(get_content_details)
+
+# Gets a username from a user guid with error checking
+user_username_from_guid <- function(guid) {
+  username <- tryCatch(
+    client$user(guid)$username,
+    error = function(e){"Anonymous"}
+  )
+  username
+}
+
+memo_user_username_from_guid <- memoise::memoise(user_username_from_guid)
+
+```
+
+
+```{r generate, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+usage_data <- get_usage_shiny(client, limit = Inf, from = Sys.Date()-1, to = Sys.Date()) |> 
+  #select(content_guid, user_guid, started, ended) |> 
+  #mutate(content_title = content_guid) |> 
+  mutate(content_title = lapply(content_guid, function(x){memo_get_content_details(x)$title})) |>
+  mutate(user_name = lapply(user_guid, function(x){memo_user_username_from_guid(x)})) |> 
+  select(content_title, user_name, started, ended)
+
+usage_data |> knitr::kable() #DT::datatable()
+```
