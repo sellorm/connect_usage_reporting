@@ -36,3 +36,7 @@ Set `CONNECT_SERVER` to the URL for your connect instance, eg.
  This will ensure that Connect keeps older versions of the report and you'll be
  able to view those using the "History" option as seen in the screenshot above.
  
+## License
+
+MIT © [Mark Sellors](https://github.com/sellorm)
+
