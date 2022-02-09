@@ -1566,11 +1566,17 @@
     }
   },
   "files": {
+    "access-report-screenshot.png": {
+      "checksum": "c35905e02adc16a6a76bf0d0a764ce17"
+    },
     "connect_usage_report.Rmd": {
-      "checksum": "5ce3d891db0ec0fe7779a279f6333d28"
+      "checksum": "7c42497f462f833c4b6f6ae535e1f48b"
+    },
+    "LICENSE.md": {
+      "checksum": "9d0c3bc3a94a5c881eb2cc3fae591e3f"
     },
     "README.md": {
-      "checksum": "7aeaa303684f3d73b2a0f42f5cdb7c04"
+      "checksum": "06e1b521990ab3d43167c5417cf4eafc"
     }
   },
   "users": null
