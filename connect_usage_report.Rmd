@@ -29,7 +29,7 @@ get_content_details <- function(content_guid){
       }
     )
   list("title" = content_data$content$title,
-       "url" = content_data$content$url)
+       "url" = content_data$content$dashboard_url)
 }
 
 
@@ -50,12 +50,19 @@ memo_user_username_from_guid <- memoise::memoise(user_username_from_guid)
 
 
 ```{r generate, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-usage_data <- get_usage_shiny(client, limit = Inf, from = Sys.Date()-1, to = Sys.Date()) %>% 
-  #select(content_guid, user_guid, started, ended) %>% 
-  #mutate(content_title = content_guid) %>% 
-  mutate(content_title = lapply(content_guid, function(x){memo_get_content_details(x)$title})) %>%
-  mutate(user_name = lapply(user_guid, function(x){memo_user_username_from_guid(x)})) %>% 
+usage_data <-
+  get_usage_shiny(client,
+                  limit = Inf,
+                  from = Sys.Date() - 1,
+                  to = Sys.Date()) %>%
+  mutate(content_title = lapply(content_guid, function(x) {
+    content_details <- memo_get_content_details(x)
+    paste0("<a href=\"", content_details$url, "\">", content_details$title, "</a>\n")
+  })) %>%
+  mutate(user_name = lapply(user_guid, function(x) {
+    memo_user_username_from_guid(x)
+  })) %>%
   select(content_title, user_name, started, ended)
 
-usage_data %>% knitr::kable() #DT::datatable()
+usage_data %>% knitr::kable()
 ```
