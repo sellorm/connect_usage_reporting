@@ -10,7 +10,7 @@ API and displays it in a table.
 You can deploy this project 
 [directly from git](https://docs.rstudio.com/connect/user/git-backed/)
 and it should work out-of-the-box on Connect instances with version 1.9.0 and
-above.
+above. If you do so, please ensure you select the correct branch, `main`.
 
 For versions of Connect older than that YMMV, but you could try setting the 
 following environment variables in the config panel for the app once it's been
